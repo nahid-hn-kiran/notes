@@ -1,0 +1,13 @@
+{
+  "name": "tiny-notes-frontend",
+  "version": "1.0.0",
+  "description": "Vanilla JavaScript frontend for Tiny Notes",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

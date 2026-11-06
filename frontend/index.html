@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tiny Notes - A lightweight, polished personal note-taking dashboard.">
+  <title>Tiny Notes</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z'/><polyline points='14 2 14 8 20 8'/><path d='m9 15 2 2 4-4'/></svg>" type="image/svg+xml">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Main Header -->
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-logo" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="m9 15 2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">Tiny Notes</h1>
+            <span class="brand-badge">Personal</span>
+          </div>
+        </div>
+
+        <div class="search-wrapper">
+          <div class="search-input-container">
+            <span class="search-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.3-4.3"/>
+              </svg>
+            </span>
+            <input 
+              type="text" 
+              id="search-input" 
+              class="search-input" 
+              placeholder="Search notes by title or content... (Press / to focus)"
+              aria-label="Search notes"
+              autocomplete="off"
+            >
+            <button id="clear-search-btn" class="clear-search-btn hidden" aria-label="Clear search input">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18"/>
+                <path d="m6 6 12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="btn-create-note" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/>
+              <path d="M12 5v14"/>
+            </svg>
+            <span>New Note</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <div class="content-container">
+        <!-- Dashboard Subheader -->
+        <div class="dashboard-bar">
+          <div class="bar-title-group">
+            <h2 class="dashboard-title">Overview</h2>
+            <span id="total-notes-count" class="count-badge">0 notes</span>
+          </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" class="loading-state hidden" aria-live="polite">
+          <div class="spinner" aria-hidden="true"></div>
+          <span>Loading your notes...</span>
+        </div>
+
+        <!-- Pinned Notes Section -->
+        <section id="pinned-section" class="notes-section hidden" aria-labelledby="pinned-section-heading">
+          <div class="section-header">
+            <span class="section-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="17" x2="12" y2="22"/>
+                <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/>
+              </svg>
+            </span>
+            <h3 id="pinned-section-heading" class="section-title">Pinned Notes</h3>
+          </div>
+          <div id="pinned-grid" class="notes-grid"></div>
+        </section>
+
+        <!-- All Notes Section -->
+        <section id="all-section" class="notes-section" aria-labelledby="all-section-heading">
+          <div class="section-header">
+            <h3 id="all-section-heading" class="section-title">All Notes</h3>
+          </div>
+          <div id="all-grid" class="notes-grid"></div>
+        </section>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-state-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <line x1="10" y1="9" x2="8" y2="9"/>
+            </svg>
+          </div>
+          <h3 class="empty-state-title">No notes yet</h3>
+          <p class="empty-state-description">Capture your thoughts, ideas, or server administration checklists.</p>
+          <button class="btn btn-primary empty-state-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/>
+              <path d="M12 5v14"/>
+            </svg>
+            <span>Create your first note</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Note Editor Modal -->
+    <div id="editor-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h2 id="modal-title" class="modal-title">Create Note</h2>
+          <button id="btn-close-editor" class="icon-button modal-close" aria-label="Close dialog">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <form id="editor-form" class="editor-form">
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="note-title-input" class="form-label">Title <span class="required">*</span></label>
+              <span id="title-char-count" class="char-count">0/150</span>
+            </div>
+            <input 
+              type="text" 
+              id="note-title-input" 
+              class="form-input" 
+              placeholder="e.g., Nginx Configuration Tips" 
+              required 
+              maxlength="150"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="note-content-input" class="form-label">Content</label>
+              <span id="content-char-count" class="char-count">0/20,000</span>
+            </div>
+            <textarea 
+              id="note-content-input" 
+              class="form-textarea" 
+              rows="8" 
+              placeholder="Type your markdown, server commands, or thoughts here..."
+              maxlength="20000"
+            ></textarea>
+          </div>
+
+          <div class="form-group-checkbox">
+            <label class="checkbox-label" for="note-pinned-checkbox">
+              <input type="checkbox" id="note-pinned-checkbox" class="form-checkbox">
+              <span class="checkbox-custom"></span>
+              <span class="checkbox-text">Pin this note to top</span>
+            </label>
+          </div>
+
+          <div class="modal-footer">
+            <div class="modal-shortcut-hint">
+              <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to save
+            </div>
+            <div class="modal-actions">
+              <button type="button" id="btn-cancel-editor" class="btn btn-secondary">Cancel</button>
+              <button type="submit" id="btn-save-note" class="btn btn-primary">Save Note</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-backdrop hidden" role="alertdialog" aria-modal="true" aria-labelledby="delete-dialog-title">
+      <div class="modal-container modal-container-sm">
+        <div class="modal-header">
+          <h2 id="delete-dialog-title" class="modal-title text-danger">Delete Note</h2>
+          <button id="btn-close-delete" class="icon-button modal-close" aria-label="Close dialog">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="delete-warning-text">
+            Are you sure you want to delete <strong id="delete-note-title">this note</strong>? This action cannot be undone.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-delete" class="btn btn-secondary">Cancel</button>
+          <button type="button" id="btn-confirm-delete" class="btn btn-danger">Delete Note</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
